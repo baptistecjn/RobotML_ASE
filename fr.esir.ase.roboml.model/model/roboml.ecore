@@ -14,8 +14,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="Statement" abstract="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="RobotMLProgram">
     <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="entreyFunction" lowerBound="1"/>
+        eType="#//Function" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entreyFunction" lowerBound="1"
+        eType="#//Function"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Function">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -23,10 +24,122 @@
         eType="#//Datatype"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
         eType="#//Parameter" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="body" upperBound="-1" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" upperBound="-1" eType="#//Statement"
+        containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Parameter">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//Datatype"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Parameter" eSuperTypes="#//Variable"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="EString" lowerBound="1"
+        eType="#//Datatype"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VariableDecla" eSuperTypes="#//Statement #//Variable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="InitialValue" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Assignment" eSuperTypes="#//Statement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
+        eType="#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Loop" eSuperTypes="#//Statement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
+        eType="#//Expression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" upperBound="-1" eType="#//Statement"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Condition" eSuperTypes="#//Statement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
+        eType="#//Expression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="thenBranch" upperBound="-1"
+        eType="#//Statement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elseBranch" upperBound="-1"
+        eType="#//Statement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MovementDirection">
+    <eLiterals name="FORWARD"/>
+    <eLiterals name="BACKWARD" value="1"/>
+    <eLiterals name="LEFT" value="2"/>
+    <eLiterals name="RIGHT" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RotationDirection">
+    <eLiterals name="CLOCK"/>
+    <eLiterals name="ANTICLOCK" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Movement" eSuperTypes="#//Statement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="direction" lowerBound="1"
+        eType="#//MovementDirection"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unit" lowerBound="1" eType="#//DistanceUnit"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="distance" lowerBound="1"
+        eType="#//Expression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Rotation" eSuperTypes="#//Statement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="direction" lowerBound="1"
+        eType="#//RotationDirection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="angle" lowerBound="1" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SetSpeed" eSuperTypes="#//Statement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="speed" lowerBound="1" eType="#//Expression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unit" lowerBound="1" eType="#//DistanceUnit"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FunctionCall" eSuperTypes="#//Expression #//Statement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="function" lowerBound="1"
+        eType="#//Function"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="argument" upperBound="-1"
+        eType="#//Expression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Return" eSuperTypes="#//Statement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NumberConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BooleanConstant" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VariableRef" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
+        eType="#//Variable"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="BinaryOperator">
+    <eLiterals name="PLUS"/>
+    <eLiterals name="MINUS" value="1"/>
+    <eLiterals name="MULT" value="2"/>
+    <eLiterals name="DIV" value="3"/>
+    <eLiterals name="LT" value="4"/>
+    <eLiterals name="LTE" value="5"/>
+    <eLiterals name="GT" value="6"/>
+    <eLiterals name="GTE" value="7"/>
+    <eLiterals name="EQ" value="8"/>
+    <eLiterals name="NEQ" value="9"/>
+    <eLiterals name="AND" value="10"/>
+    <eLiterals name="OR" value="11"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="UnaryOperator">
+    <eLiterals name="NOT"/>
+    <eLiterals name="MINUS" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BinaryExpression" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+        eType="#//BinaryOperator"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="#//Expression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnaryExpression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+        eType="#//UnaryOperator"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1"
+        eType="#//Expression" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SensorExpression" abstract="true" eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DistanceSensor" eSuperTypes="#//SensorExpression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unit" lowerBound="1" eType="#//DistanceUnit"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeSensor" eSuperTypes="#//SensorExpression"/>
 </ecore:EPackage>
