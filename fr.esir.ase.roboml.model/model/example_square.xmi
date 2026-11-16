@@ -1,3 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<roboml:RobotMLProgram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:roboml="http://www.example.org/roboml" xsi:schemaLocation="http://www.example.org/roboml roboml.ecore"/>
+<roboml:RobotMLProgram
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:roboml="http://www.example.org/roboml"
+    xsi:schemaLocation="http://www.example.org/roboml roboml.ecore"
+    entreyFunction="//@functions.1">
+  <functions
+      name="square">
+    <body xsi:type="roboml:Movement"
+        unit="CM">
+      <distance
+          xsi:type="roboml:NumberConstant"
+          value="30.0"/>
+    </body>
+    <body xsi:type="roboml:Rotation">
+      <angle
+          xsi:type="roboml:NumberConstant"
+          value="90.0"/>
+    </body>
+    <body xsi:type="roboml:Movement">
+      <distance
+          xsi:type="roboml:NumberConstant"
+          value="300.0"/>
+    </body>
+    <body xsi:type="roboml:Rotation">
+      <angle
+          xsi:type="roboml:NumberConstant"
+          value="90.0"/>
+    </body>
+    <body xsi:type="roboml:Movement"
+        unit="CM">
+      <distance
+          xsi:type="roboml:NumberConstant"
+          value="30.0"/>
+    </body>
+    <body xsi:type="roboml:Rotation">
+      <angle
+          xsi:type="roboml:NumberConstant"
+          value="90.0"/>
+    </body>
+    <body xsi:type="roboml:Movement">
+      <distance
+          xsi:type="roboml:NumberConstant"
+          value="300.0"/>
+    </body>
+    <body xsi:type="roboml:Rotation">
+      <angle
+          xsi:type="roboml:NumberConstant"
+          value="90.0"/>
+    </body>
+  </functions>
+  <functions
+      name="entry">
+    <body xsi:type="roboml:SetSpeed">
+      <speed
+          xsi:type="roboml:NumberConstant"
+          value="150.0"/>
+    </body>
+    <body xsi:type="roboml:VariableDecla"
+        EString="NUMBER">
+      <InitialValue
+          xsi:type="roboml:NumberConstant"/>
+    </body>
+    <body xsi:type="roboml:Loop">
+      <condition
+          xsi:type="roboml:BinaryExpression">
+        <left
+            xsi:type="roboml:VariableRef"
+            variable="//@functions.1/@body.1"/>
+        <right
+            xsi:type="roboml:NumberConstant"
+            value="5.0"/>
+      </condition>
+      <body
+          xsi:type="roboml:Assignment">
+        <value
+            xsi:type="roboml:BinaryExpression">
+          <left
+              xsi:type="roboml:VariableRef"
+              variable="//@functions.1/@body.1"/>
+          <right
+              xsi:type="roboml:NumberConstant"
+              value="1.0"/>
+        </value>
+      </body>
+      <body
+          xsi:type="roboml:FunctionCall"
+          function="//@functions.0"/>
+    </body>
+  </functions>
+</roboml:RobotMLProgram>
