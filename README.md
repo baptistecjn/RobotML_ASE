@@ -6,7 +6,8 @@ Ce dépôt contient le métamodèle Ecore du langage dédié (DSL) RoboML, conç
 
 * `fr.esir.ase.roboml.model/model/roboml.ecore` : Le métamodèle Ecore de RoboML.
 * `fr.esir.ase.roboml.model/model/example_square.xmi` : Une instance dynamique valide représentant le programme d'exemple du sujet (`entry` et `square`).
-
+* `roboml/src/language/robo-ml.langium` : Grammaire Langium (syntaxe concrète, gestion des priorités d'opérateurs et terminaux).
+* `roboml/` : Projet Langium / TypeScript générant l'AST, le parseur et l'extension VS Code pour la Partie 2 et la Partie 3.
 ---
 
 ## Principaux choix de conception
@@ -55,5 +56,10 @@ Toutes les valeurs évaluables héritent de la classe abstraite **`Expression`**
   * **`DistanceSensor`** : mesure la distance face à un obstacle dans l'unité souhaitée (`unit : DistanceUnit[1]`).
   * **`TimeSensor`** : retourne la mesure du temps courant (timestamp / horloge interne).
 
+### 7. Passage à la syntaxe concrète sous Langium (Partie 2)
+- **Syntaxe concrète lisible** : Plutôt que de conserver une syntaxe générée automatiquement très verbeuse, la grammaire `robo-ml.langium` définit une syntaxe concise alignée sur les exemples du sujet (`let`, `var`, `loop`, `if`/`else`, `Forward`/`Backward`/`Left`/`Right`, `Clock`/`Anticlock`, `setSpeed`, `getDistance()`, `getTimestamp()`, avec `in` optionnel pour les unités `mm`, `cm`, `m`).
+- **Gestion des priorités d'opérateurs** : Les expressions sont structurées en niveaux de priorité (`||`, `&&`, `==`/`!=`, `<`/`<=`/`>`/`>=`, `+`/`-`, `*`/`/`, puis `PrimaryExpression` et `UnaryExpression`) avec `{infer BinaryExpression.left=current}` afin d'éviter la récursion gauche et de construire un AST cohérent.
+- **Adaptation aux contraintes JavaScript/Langium** : La règle de fonction a été nommée `FunctionDef` (et non `Function`, mot-clé réservé en JavaScript/TypeScript), et les fichiers générés par défaut du template ont été adaptés à `RobotMLProgram`.
+  
 ---
 *Ce document a été partielement rédigé et structuré avec l'aide d'une IA.*
