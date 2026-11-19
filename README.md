@@ -21,8 +21,8 @@ Toutes les instructions exécutables dans le corps d'une fonction ou d'une struc
 
 Pour gérer les variables et paramètres de manière uniforme :
 * Nous avons introduit une classe abstraite **`Variable`** portant un `name : EString` et un `type : Datatype`.
-* **`Parameter`** (paramètre d'une fonction) et **`VariableDeclaration`** (déclaration locale `var number count = 0`) héritent toutes deux de **`Variable`**.
-* **`VariableDeclaration`** hérite également de **`Statement`**  afin de pouvoir être placée directement dans un bloc d'instructions, avec une expression d'initialisation optionnelle (`initialValue : Expression[0..1]`).
+* **`Parameter`** (paramètre d'une fonction) et **`VariableDecla`** (déclaration locale `var number count = 0`) héritent toutes deux de **`Variable`**.
+* **`VariableDecla`** hérite également de **`Statement`**  afin de pouvoir être placée directement dans un bloc d'instructions, avec une expression d'initialisation optionnelle (`initialValue : Expression[0..1]`).
 * Grâce à ce polymorphisme, l'affectation (**`Assignment`**) et la lecture de variable (**`VariableRef`**) pointent simplement vers **`Variable`** (`containment = false`), permettant de manipuler indifféremment une variable locale ou un paramètre de fonction.
 
 ### 3. Double nature des appels de fonctions (`FunctionCall`)

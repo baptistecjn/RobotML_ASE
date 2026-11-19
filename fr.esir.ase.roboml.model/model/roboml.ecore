@@ -15,7 +15,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="RobotMLProgram">
     <eStructuralFeatures xsi:type="ecore:EReference" name="functions" upperBound="-1"
         eType="#//Function" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="entreyFunction" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entryFunction" lowerBound="1"
         eType="#//Function"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Function">
@@ -30,11 +30,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="Parameter" eSuperTypes="#//Variable"/>
   <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="EString" lowerBound="1"
-        eType="#//Datatype"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//Datatype"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VariableDecla" eSuperTypes="#//Statement #//Variable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="InitialValue" eType="#//Expression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initialValue" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Assignment" eSuperTypes="#//Statement">
@@ -131,7 +131,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="UnaryExpression">
+  <eClassifiers xsi:type="ecore:EClass" name="UnaryExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
         eType="#//UnaryOperator"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1"
