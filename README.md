@@ -1,4 +1,4 @@
-# Projet RoboML — Métamodèle Ecore (Checkpoint 1)
+# Projet RoboML — DSL de contrôle de robot
 
 Ce dépôt contient le métamodèle Ecore du langage dédié (DSL) RoboML, conçu avec Eclipse DSL 2025-09, permettant de modéliser le comportement, la logique de contrôle et les déplacements d'un robot.
 
