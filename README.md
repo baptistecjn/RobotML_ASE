@@ -60,7 +60,7 @@ Toutes les valeurs évaluables héritent de la classe abstraite **`Expression`**
 - **Syntaxe concrète lisible** : Plutôt que de conserver une syntaxe générée automatiquement très verbeuse, la grammaire `robo-ml.langium` définit une syntaxe concise alignée sur les exemples du sujet (`let`, `var`, `loop`, `if`/`else`, `Forward`/`Backward`/`Left`/`Right`, `Clock`/`Anticlock`, `setSpeed`, `getDistance()`, `getTimestamp()`, avec `in` optionnel pour les unités `mm`, `cm`, `m`).
 - **Gestion des priorités d'opérateurs** : Les expressions sont structurées en niveaux de priorité (`||`, `&&`, `==`/`!=`, `<`/`<=`/`>`/`>=`, `+`/`-`, `*`/`/`, puis `PrimaryExpression` et `UnaryExpression`) avec `{infer BinaryExpression.left=current}` afin d'éviter la récursion gauche et de construire un AST cohérent.
 - **Adaptation aux contraintes JavaScript/Langium** : La règle de fonction a été nommée `FunctionDef` (et non `Function`, mot-clé réservé en JavaScript/TypeScript), et les fichiers générés par défaut du template ont été adaptés à `RobotMLProgram`.
-- **On commencé par générer le Xtext avec notre MetaModel directement dans eclipse. On a ensuite repris ce fichier pour l'adapter en langium tout en corrigeant les problèmes liés à la génération automatique. On a ensuite pu vérifier la bonne detection de notre grammaire avec les exemples fournis.
-- **  
+- On commencé par générer le Xtext avec notre MetaModel directement dans eclipse. On a ensuite repris ce fichier pour l'adapter en langium tout en corrigeant les problèmes liés à la génération automatique. On a ensuite pu vérifier la bonne detection de notre grammaire avec les exemples fournis.
+-   
 ---
 *Ce document a été partielement rédigé et structuré avec l'aide d'une IA.*
