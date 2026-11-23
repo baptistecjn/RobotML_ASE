@@ -1,5 +1,16 @@
 .DS_Store
+Thumbs.db
 .metadata/
-bin/
 target/
 *.class
+bin/
+!roboml/bin/
+node_modules/
+out/
+dist/
+public/
+*.tsbuildinfo
+*.vsix
+npm-debug.log*
+yarn-error.log*
+coverage/
