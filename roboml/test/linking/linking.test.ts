@@ -1,53 +1,47 @@
 import { afterEach, beforeAll, describe, expect, test } from "vitest";
 import { EmptyFileSystem, type LangiumDocument } from "langium";
-import { expandToString as s } from "langium/generate";
 import { clearDocuments, parseHelper } from "langium/test";
 import { createRoboMlServices } from "../../src/language/robo-ml-module.js";
-import { Model, isModel } from "../../src/language/generated/ast.js";
+import { RobotMLProgram, isLoop, isAssignment, isFunctionCall } from "../../src/language/generated/ast.js";
 
 let services: ReturnType<typeof createRoboMlServices>;
-let parse:    ReturnType<typeof parseHelper<Model>>;
-let document: LangiumDocument<Model> | undefined;
+let parse: ReturnType<typeof parseHelper<RobotMLProgram>>;
+let document: LangiumDocument<RobotMLProgram> | undefined;
 
 beforeAll(async () => {
     services = createRoboMlServices(EmptyFileSystem);
-    parse = parseHelper<Model>(services.RoboMl);
-
-    // activate the following if your linking test requires elements from a built-in library, for example
-    // await services.shared.workspace.WorkspaceManager.initializeWorkspace([]);
+    parse = parseHelper<RobotMLProgram>(services.RoboMl);
 });
 
 afterEach(async () => {
-    document && clearDocuments(services.shared, [ document ]);
+    document && clearDocuments(services.shared, [document]);
 });
 
 describe('Linking tests', () => {
 
-    test('linking of greetings', async () => {
+    test('linking of variables and function calls', async () => {
         document = await parse(`
-            person Langium
-            Hello Langium!
+            let void entry () {
+                var number count = 0
+                loop count < 5 {
+                    count = count + 1
+                    square()
+                }
+            }
+            let void square() {
+                Forward 30 in cm
+            }
         `);
 
-        expect(
-            // here we first check for validity of the parsed document object by means of the reusable function
-            //  'checkDocumentValid()' to sort out (critical) typos first,
-            // and then evaluate the cross references we're interested in by checking
-            //  the referenced AST element as well as for a potential error message;
-            checkDocumentValid(document)
-                || document.parseResult.value.greetings.map(g => g.person.ref?.name || g.person.error?.message).join('\n')
-        ).toBe(s`
-            Langium
-        `);
+        expect(document.parseResult.parserErrors).toHaveLength(0);
+        const entryFn = document.parseResult.value.functions[0];
+        const loopStmt = entryFn.body[1];
+        expect(isLoop(loopStmt)).toBe(true);
+        if (isLoop(loopStmt)) {
+            const assign = loopStmt.body[0];
+            const call = loopStmt.body[1];
+            expect(isAssignment(assign) && assign.variable.ref?.name).toBe('count');
+            expect(isFunctionCall(call) && call.function.ref?.name).toBe('square');
+        }
     });
 });
-
-function checkDocumentValid(document: LangiumDocument): string | undefined {
-    return document.parseResult.parserErrors.length && s`
-        Parser errors:
-          ${document.parseResult.parserErrors.map(e => e.message).join('\n  ')}
-    `
-        || document.parseResult.value === undefined && `ParseResult is 'undefined'.`
-        || !isModel(document.parseResult.value) && `Root AST object is a ${document.parseResult.value.$type}, expected a '${Model}'.`
-        || undefined;
-}

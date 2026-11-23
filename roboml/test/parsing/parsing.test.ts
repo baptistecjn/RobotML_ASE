@@ -1,60 +1,73 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { EmptyFileSystem, type LangiumDocument } from "langium";
-import { expandToString as s } from "langium/generate";
 import { parseHelper } from "langium/test";
 import { createRoboMlServices } from "../../src/language/robo-ml-module.js";
-import { Model, isModel } from "../../src/language/generated/ast.js";
+import { RobotMLProgram, isRobotMLProgram } from "../../src/language/generated/ast.js";
 
 let services: ReturnType<typeof createRoboMlServices>;
-let parse:    ReturnType<typeof parseHelper<Model>>;
-let document: LangiumDocument<Model> | undefined;
+let parse: ReturnType<typeof parseHelper<RobotMLProgram>>;
+let document: LangiumDocument<RobotMLProgram> | undefined;
 
 beforeAll(async () => {
     services = createRoboMlServices(EmptyFileSystem);
-    parse = parseHelper<Model>(services.RoboMl);
-
-    // activate the following if your linking test requires elements from a built-in library, for example
-    // await services.shared.workspace.WorkspaceManager.initializeWorkspace([]);
+    parse = parseHelper<RobotMLProgram>(services.RoboMl);
 });
 
 describe('Parsing tests', () => {
 
-    test('parse simple model', async () => {
+    test('parse square example program', async () => {
         document = await parse(`
-            person Langium
-            Hello Langium!
+            let void entry () {
+                setSpeed(150 in mm) // distance per second (here 150mm/s)
+                var number count = 0
+                loop count < 5
+                {
+                    count = count + 1
+                    square()
+                }
+            }
+
+            let void square(){
+                Forward 30 in cm
+                Clock 90
+                Forward 300 in mm
+                Clock 90
+                Forward 30 in cm
+                Clock 90
+                Forward 300 in mm
+                Clock 90
+            }
         `);
 
-        // check for absensce of parser errors the classic way:
-        //  deacivated, find a much more human readable way below!
-        // expect(document.parseResult.parserErrors).toHaveLength(0);
+        expect(checkDocumentValid(document)).toBeUndefined();
+        expect(document.parseResult.value.functions).toHaveLength(2);
+    });
 
-        expect(
-            // here we use a (tagged) template expression to create a human readable representation
-            //  of the AST part we are interested in and that is to be compared to our expectation;
-            // prior to the tagged template expression we check for validity of the parsed document object
-            //  by means of the reusable function 'checkDocumentValid()' to sort out (critical) typos first;
-            checkDocumentValid(document) || s`
-                Persons:
-                  ${document.parseResult.value?.persons?.map(p => p.name)?.join('\n  ')}
-                Greetings to:
-                  ${document.parseResult.value?.greetings?.map(g => g.person.$refText)?.join('\n  ')}
-            `
-        ).toBe(s`
-            Persons:
-              Langium
-            Greetings to:
-              Langium
+    test('parse sensor example program', async () => {
+        document = await parse(`
+            let void entry () {
+                setSpeed(200 mm)
+                var number time = getTimestamp()
+                loop time < 60000
+                {
+                    var number dist = getDistance() in cm
+                    Forward dist - 25 in cm
+                    Clock 90
+                    time = getTimestamp()
+                }
+            }
         `);
+
+        expect(checkDocumentValid(document)).toBeUndefined();
     });
 });
 
 function checkDocumentValid(document: LangiumDocument): string | undefined {
-    return document.parseResult.parserErrors.length && s`
-        Parser errors:
-          ${document.parseResult.parserErrors.map(e => e.message).join('\n  ')}
-    `
-        || document.parseResult.value === undefined && `ParseResult is 'undefined'.`
-        || !isModel(document.parseResult.value) && `Root AST object is a ${document.parseResult.value.$type}, expected a '${Model}'.`
-        || undefined;
+    return document.parseResult.parserErrors.length
+        ? `Parser errors:\n  ${document.parseResult.parserErrors.map(e => e.message).join('\n  ')}`
+        : document.parseResult.value === undefined
+            ? `ParseResult is 'undefined'.`
+            : !isRobotMLProgram(document.parseResult.value)
+                ? `Root AST object is a ${document.parseResult.value.$type}, expected a 'RobotMLProgram'.`
+                : undefined;
 }
