@@ -8,6 +8,10 @@ Ce dépôt contient le métamodèle Ecore du langage dédié (DSL) RoboML, conç
 * `fr.esir.ase.roboml.model/model/example_square.xmi` : Une instance dynamique valide représentant le programme d'exemple du sujet (`entry` et `square`).
 * `roboml/src/language/robo-ml.langium` : Grammaire Langium (syntaxe concrète, gestion des priorités d'opérateurs et terminaux).
 * `roboml/` : Projet Langium / TypeScript générant l'AST, le parseur et l'extension VS Code pour la Partie 2 et la Partie 3.
+* `roboml/src/language/robo-ml-validator.ts` : Règles de validation statique du langage.
+* `roboml/test/` : Suite de tests unitaires Vitest (`parsing`, `linking` et `validating`).
+* `roboml/examples/` : Programmes RoboML de démonstration (`.rob`), incluant les exemples du sujet (motif en carré et utilisation des capteurs `getDistance()` / `getTimestamp()`).
+
 ---
 
 ## Principaux choix de conception
@@ -61,6 +65,43 @@ Toutes les valeurs évaluables héritent de la classe abstraite **`Expression`**
 - **Gestion des priorités d'opérateurs** : Les expressions sont structurées en niveaux de priorité (`||`, `&&`, `==`/`!=`, `<`/`<=`/`>`/`>=`, `+`/`-`, `*`/`/`, puis `PrimaryExpression` et `UnaryExpression`) avec `{infer BinaryExpression.left=current}` afin d'éviter la récursion gauche et de construire un AST cohérent.
 - **Adaptation aux contraintes JavaScript/Langium** : La règle de fonction a été nommée `FunctionDef` (et non `Function`, mot-clé réservé en JavaScript/TypeScript), et les fichiers générés par défaut du template ont été adaptés à `RobotMLProgram`.
 - On commencé par générer le Xtext avec notre MetaModel directement dans eclipse. On a ensuite repris ce fichier pour l'adapter en langium tout en corrigeant les problèmes liés à la génération automatique. On a ensuite pu vérifier la bonne detection de notre grammaire avec les exemples fournis.
--   
+
+## Exemples, Tests et Utilisation
+Les programmes RoboML utilisent l'extension **`.rob`**. Deux programmes de référence issus du sujet ont servi à valider la grammaire, la résolution des références et la coloration syntaxique :
+* **Motif en carré (`square`)** : réglage de vitesse (`setSpeed`), boucle `loop`, incrémentation de variable et appel de fonction.
+* **Boucle avec capteurs (`sensors`)** : utilisation combinée de `getTimestamp()`, `getDistance() in cm` et d'expressions arithmétiques dans les commandes de mouvement (`Forward dist - 25 in cm`).
+
+### Installation et build
+
+*NB : à lancer dans le dossier roboml*
+
+```bash
+cd roboml
+npm install
+npm run langium:generate
+npm run build
+```
+
+### Exécution des tests unitaires
+
+```bash
+npm test
+```
+
+La suite de tests vérifie trois aspects :
+* **Parsing (`test/parsing/parsing.test.ts`)** : analyse syntaxique sans erreur des programmes d'exemple (commentaires, priorités opératoires, unités avec ou sans `in`).
+* **Linking (`test/linking/linking.test.ts`)** : résolution des références croisées entre appels de fonctions (`FunctionCall`) et déclarations (`FunctionDef`), ainsi qu'entre variables/paramètres et leurs usages.
+* **Validation (`test/validating/validating.test.ts`)** : vérification des diagnostics statiques sur des programmes valides et invalides.
+
+### Lancer l'extension VS Code
+
+Ouvrir le dossier `roboml/` dans VS Code puis lancer la configuration **Run Extension** (`F5`), ou exécuter depuis `roboml/` :
+
+```bash
+code --extensionDevelopmentPath=$PWD
+```
+
+Ouvrir ensuite un fichier `.rob` dans la fenêtre *Extension Development Host* pour avoir de la coloration syntaxique, l'autocomplétion, etc...
+
 ---
 *Ce document a été partielement rédigé et structuré avec l'aide d'une IA.*
